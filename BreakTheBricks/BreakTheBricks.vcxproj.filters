@@ -18,7 +18,7 @@
     <ClCompile Include="main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="start.c">
+    <ClCompile Include="title_screen.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
