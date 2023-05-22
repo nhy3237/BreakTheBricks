@@ -128,12 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
-    <ClCompile Include="title_screen.c">
+    <ClCompile Include="Screen.c" />
+    <ClCompile Include="setting.c" />
+    <ClCompile Include="title.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="setting.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BreakTheBricks.rc" />
