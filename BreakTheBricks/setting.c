@@ -4,7 +4,6 @@
 
 #define MAP_WIDTH 119
 #define MAP_HEIGHT 38
-#define BRICKS_WIDTH 112
 #define DONGDONG {gotoxy(30, 15); printf("●");\
                   gotoxy(20, 20); printf("이름 : 동동이");\
                   gotoxy(20, 22); printf("장점 : 속도가 빠르다.");\
@@ -45,18 +44,6 @@ void draw_map() // 맵 테두리
     }
 }
 
-void draw_bricks() // 벽돌 테두리
-{
-    SetColor(15);
-    for (int i = 4; i < BRICKS_WIDTH; i++)
-    {
-        for (int j = 3; j < 13; j++)
-        {
-            gotoxy(i, j); printf("□");
-        }
-    }
-}
-
 int selPlayer(int player)
 {    
     system("cls");
@@ -66,13 +53,13 @@ int selPlayer(int player)
 
     while (1)
     {
-        if (GetAsyncKeyState(VK_LEFT) < 0)
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000)
             if (player == 0) player = 1;
             else player = 0;
-        else if (GetAsyncKeyState(VK_RIGHT) < 0)
+        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
             if (player == 1) player = 0;
             else player = 1;
-        else if (GetAsyncKeyState(VK_RETURN) < 0) // 엔터를 눌렀을 때
+        else if (GetAsyncKeyState(VK_RETURN) & 0x8000) // 엔터를 눌렀을 때
         {
             Sleep(200);
             return player;
@@ -99,40 +86,3 @@ int selPlayer(int player)
     }
 }
 
-void play(int player, int HP)
-{
-    int countTime = 60;
-
-    while (1)
-    {
-        ScreenClear();
-
-        draw_map();
-        draw_bricks();
-
-        SetColor(14);
-        gotoxy(2, 1); printf("♡ 체력 : %d", HP);
-        gotoxy(102, 1); printf("제한 시간 : %2d초", countTime);
-
-        if (player == 0)
-        {
-            gotoxy(60, 35); printf("●");
-        }
-        else
-        {
-            gotoxy(60, 35); printf("■");
-        }
-        gotoxy(57, 36); printf("////////");
-
-        Sleep(1000);
-        ScreenFlipping();
-
-        countTime -= 1;
-
-        if (countTime < 0)
-        {
-            printf("종료되었습니다.");
-            return 0;
-        }
-    }
-}

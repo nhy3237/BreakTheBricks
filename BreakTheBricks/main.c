@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define White {SetColor(15);}
+
 int player = 0; // 0 동동이, 1 모모
 int HP = 5;
 
@@ -26,7 +28,7 @@ int main()
                 check = 1;
             }
 
-            if (GetAsyncKeyState(VK_RETURN) < 0)
+            if (GetAsyncKeyState(VK_RETURN) & 0x8000)
             {
                 system("cls");
                 Sleep(200);
@@ -36,15 +38,17 @@ int main()
             break;
         case 1: // 게임 시작
             player = selPlayer(player);
-            play(player, HP);
+            level1_play(player, HP);
+            Menu = 2;
             break;
         default: break;
         }
     }
     if (Menu == 2) // 게임 종료
     {
-        SetColor(15);
+        White;
         system("cls");
+        printf("종료되었습니다.");
         exit(0);
     }
 

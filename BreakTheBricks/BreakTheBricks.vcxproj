@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="level1.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="Screen.c" />
     <ClCompile Include="setting.c" />
