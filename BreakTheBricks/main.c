@@ -9,7 +9,6 @@ int main()
 {
     int check = 0; // 화면에 출력했는지 체크
     int player = 0; // 0 동동이, 1 모모
-    int HP = 5;
 
     SetConsoleTitle(TEXT("Break the Bricks!"));
     system("mode con cols=120 lines=39");
@@ -38,7 +37,7 @@ int main()
             break;
         case 1: // 게임 시작
             player = selPlayer(player);
-            level1_play(player, HP);
+            level1_play(player);
 
             system("cls");
             Menu = title();

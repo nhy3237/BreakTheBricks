@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <process.h>
+#include <time.h>
 
 #define Red {SetColor(4);}
 #define DarkYellow {SetColor(6);}
@@ -9,15 +10,22 @@
 #define SkyBlue {SetColor(11);}
 #define BRICKS_WIDTH 113
 #define BRICKS_HEIGHT 14
+#define RUBBLE BRICKS_WIDTH - 1 // 
+
+typedef struct xy {
+    int x, y;
+};
+
+struct xy rubble[RUBBLE];
 
 int bricks[12] = { 0, }; // 배열에 y값을 넣음
 int bricks_size = sizeof(bricks) / sizeof(bricks[0]);
 int numBricks = 0, totBricks = 0; // 남은 벽돌 수, 전체 벽돌 수
 int cntTime = 30; // 제한 시간
 int max_rubble = 0; // 떨어져야 하는 장애물의 수
-
-void print_heart(void); // 화면에 장애물을 뿌려준다
-void check_hit(void); // 장애물과 캐릭터 충돌 체크
+int count_rubble = 0; // 떨어진 장애물 수
+int HP = 5; // 체력
+int rubble_flag = 0; // 장애물 내리기 시작 여부
 
 unsigned _stdcall Timer() // 제한 시간
 {
@@ -84,31 +92,106 @@ void HitPoint(int HP)
     }
 }
 
-void level1_play(int player, int HP)
+unsigned _stdcall print_rubble()
 {
+    while (bricks[0] != 0 && 31 != bricks[numBricks - 1] && cntTime != 0) // 벽돌을 다 깼거나 플레이어가 벽돌에 깔렸을 경우
+    {
+        if (rubble_flag == 1) // 벽돌 처음 깨면 장애물을 내리게 함
+        {
+            for (int i = 0; i < rand()%max_rubble; i++)
+            {
+                // 땅에 떨어졌을 경우
+                if (rubble[i].y == 33)
+                {
+                    // 기존 위치의 장애물을 삭제한다.
+                    gotoxy(rubble[i].x, rubble[i].y);
+                    printf(" ");
+
+                    // 떨어진 장애물의 갯수 증가
+                    count_rubble++;
+
+                    // 떨어진 장애물의 갯수가 최대 갯수가 아닐 경우
+                    if (max_rubble > count_rubble)
+                    {
+                        // 장애물을 위에서 다시 내리게 한다
+                        rubble[i].x = rand() % 50;
+                        rubble[i].x *= 2;
+                    }
+                    continue;
+                }
+                // 장애물을 밑으로 한칸 내린다
+                rubble[i].y = rubble[i].y + 3;
+
+                if (rubble[i].y > 1)
+                {
+                    // 기존 위치의 장애물을 삭제한다.
+                    gotoxy(rubble[i].x, rubble[i].y - 3);
+                    printf(" ");
+
+                    // 새로운 위치에 장애물을 출력한다.
+                    gotoxy(rubble[i].x, rubble[i].y);
+                    printf("-");
+                }
+            }
+            Sleep(700);
+        }
+    }
+}
+
+// 장애물을 맞았는지 체크
+void check_hit(int po_x, int po_y)
+{
+    // 현재 장애물의 수 만큼 반복
+    for (int count = 0; count < max_rubble; count++)
+    {
+        // 사용자와 같은 열인지 확인
+        if (rubble[count].x == po_x && rubble[count].y == po_y - 1)
+        {
+            HitPoint(--HP);
+        }
+    }
+}
+
+void level1_play(int player)
+{
+    int po_x = 60, po_y = 32; // 플레이어 시작 위치
+
     system("cls");
 
     draw_map();
     draw_bricks();
 
+    HP = 5;
     HitPoint(HP); 
-    _beginthreadex(NULL, 0, Timer, 0, 0, NULL);
+
+    rubble_flag = 0;
+    max_rubble = 10;
+    count_rubble = 0;
+    srand(time(0)); // 랜덤 값 초기화
+
+    for (int i = 0; i < max_rubble; i++)
+    {
+        rubble[i].x = rand() % 50;
+        rubble[i].y = i + 1;
+        rubble[i].x *= 2;
+        rubble[i].y *= -1;
+    }
+
+    _beginthreadex(NULL, 0, print_rubble, 0, 0, NULL);
 
     Yellow; gotoxy(57, 1); printf("LEVEL 1");
     gotoxy(57, 33); printf("////////");
 
-    DarkYellow; gotoxy(60, 32);
+    DarkYellow; gotoxy(po_x, po_y);
     if (player == 0) printf("●");
     else printf("■");
 
-    //srand(time(0)); // 랜덤 값 초기화
-
-    int po_x = 60, po_y = 32; // 플레이어 시작 위치
+    _beginthreadex(NULL, 0, Timer, 0, 0, NULL);
      
     while (bricks[0] != 0 && 31 != bricks[numBricks - 1] && cntTime != 0) // 벽돌을 다 깼거나 플레이어가 벽돌에 깔렸을 경우
     {
         int temp_x = po_x;
-        
+
         if (GetAsyncKeyState(0x41) & 0x8000) // A키 - 왼쪽
         {
             DarkYellow;
@@ -156,14 +239,16 @@ void level1_play(int player, int HP)
                 }
             }
             bricks[numBricks] = 0;
+            if (rubble_flag == 0) rubble_flag = 1;
         }
         Sleep(50);
+        check_hit(po_x, po_y);
     }
 
     system("cls"); Yellow;
     if (bricks[0] == 0)
     {
-        gotoxy(56, 18); printf("CLEAR!!");
+        gotoxy(54, 18); printf("C L E A R ! !");
     }
     else
     {
