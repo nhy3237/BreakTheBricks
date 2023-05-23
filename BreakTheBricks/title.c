@@ -34,7 +34,7 @@ int title()
 			else POS += 1;
 		else if (GetAsyncKeyState(VK_RETURN) & 0x8000)// 엔터를 눌렀을 때
 		{
-			Sleep(100);
+			Sleep(200);
 			return POS;
 		}
 

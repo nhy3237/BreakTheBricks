@@ -47,6 +47,15 @@ void ScreenPrint(int x, int y, char* string)
     WriteFile(g_hScreen[g_nScreenIndex], string, strlen(string), &dw, NULL);
 }
 
+void init()
+{
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO ConsoleCursor;
+    ConsoleCursor.bVisible = 0;
+    ConsoleCursor.dwSize = 1;
+    SetConsoleCursorInfo(consoleHandle, &ConsoleCursor);
+}
+
 void SetColor(int color)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);

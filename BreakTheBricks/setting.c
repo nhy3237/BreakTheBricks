@@ -1,4 +1,4 @@
-#include <Windows.h>
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -85,4 +85,3 @@ int selPlayer(int player)
         Sleep(200);
     }
 }
-

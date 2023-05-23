@@ -1,5 +1,4 @@
-void manual();
+void manual(); // 게임 방법 메뉴얼
 void draw_map();
-void draw_bricks();
+
 int selPlayer(int player);
-void level1_play(int player, int HP);
